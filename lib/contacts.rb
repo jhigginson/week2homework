@@ -9,14 +9,29 @@ class Contacts
   #
   def initialize data
     @raw_entries = data.split("\n")
+    # set @contacts to an array of contacts
     @contacts = @raw_entries.collect do |line|
-      fields = line.split("|")
-      {full_name: fields[0], city: fields[1], state: fields[2], email: fields[3]}
+      contact_hash line
     end
   end
 
   def raw_entries
     @raw_entries
+  end
+
+  ##
+  # the list of fields expected in input lines
+  #
+  def fields
+    [:full_name, :city, :state, :email]
+  end
+
+  ##
+  # create a contact (a hash) from raw input line
+  #
+  def contact_hash line
+    values = line.split("|")
+    Hash[fields.zip values]
   end
 
   ##
@@ -36,19 +51,15 @@ class Contacts
     %{\"#{name}\" <#{email}>}
   end
 
-  #########
-
   def num_entries
     @raw_entries.length
   end
 
-  def fields
-    [:full_name, :city, :state, :email]
+  def contact index
+    @contacts[index.to_i]
   end
 
-  def contact index
-    @contacts[index]
-  end
+  #########
 
   def format_contact contact
     %{\"#{contact[:full_name]} of #{contact[:city]} #{contact[:state]}\" <#{contact[:email]}>}
