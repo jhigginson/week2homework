@@ -51,31 +51,41 @@ class Contacts
   end
 
   def format_contact contact
-    
+    %{\"#{contact[:full_name]} of #{contact[:city]} #{contact[:state]}\" <#{contact[:email]}>}
   end
 
   def all
+    return @contacts
   end
 
   def formatted_list
+    @contacts.inject("") {|str, elt| str + format_contact(elt) + "\n"}.chomp
   end
 
   def full_names
+    @contacts.collect {|h| h[:full_name]}
   end
 
   def cities
+    @contacts.collect {|h| h[:city]}.uniq
   end
 
   def append_contact contact
+    @contacts.push contact
   end
 
   def delete_contact index
+    @contacts.delete_at index
   end
 
   def search string
+    @contacts.select do |x|
+      x.has_value? string
+    end
   end
 
   def all_sorted_by field
+    @contacts.sort_by {|x| x[field]} 
   end
   
 end
